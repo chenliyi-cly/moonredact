@@ -1,0 +1,480 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "moonredact/moonredact"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn audit(RedactionResult) -> AuditReport
+
+pub fn compare_policies(String, RedactionPolicy, RedactionPolicy, config? : ScanConfig) -> Result[PolicyComparison, Diagnostic]
+
+pub fn demo_text() -> String
+
+pub fn evaluate_corpus(Array[EvaluationCase], config? : ScanConfig) -> Result[CorpusEvaluation, Diagnostic]
+
+pub fn execute(Array[String]) -> CommandResult
+
+pub let help_text : String
+
+pub fn lint_policy(RedactionPolicy) -> PolicyLintReport
+
+pub fn locate_findings(String, ScanResult) -> Result[Array[LocatedFinding], Diagnostic]
+
+pub fn parse_action(String, location? : String) -> Result[RedactionAction, Diagnostic]
+
+pub fn parse_profile(String) -> Result[RedactionProfile, Diagnostic]
+
+pub fn redact(String, config? : ScanConfig, policy? : RedactionPolicy) -> Result[RedactionResult, Diagnostic]
+
+pub fn redact_batch(Array[NamedInput], profile? : RedactionProfile) -> Result[BatchResult, Diagnostic]
+
+pub fn render_residual_json(ResidualReport) -> String
+
+pub fn render_residual_text(ResidualReport) -> String
+
+pub fn render_scan_json(ScanResult) -> String
+
+pub fn render_scan_text(ScanResult) -> String
+
+pub fn scan(String, config? : ScanConfig) -> Result[ScanResult, Diagnostic]
+
+pub fn sensitivity_from_label(String) -> Sensitivity?
+
+pub fn summarize_lines(Array[LocatedFinding]) -> Array[LineSummary]
+
+pub fn verify_sanitized(RedactionResult, config? : ScanConfig) -> Result[ResidualReport, Diagnostic]
+
+// Errors
+
+// Types and methods
+pub struct AuditReport {
+  input_length : Int
+  output_length : Int
+  candidates : Int
+  accepted : Int
+  suppressed : Int
+  changed : Int
+  kept : Int
+  by_class : Array[CountEntry]
+  by_action : Array[CountEntry]
+  by_suppression : Array[CountEntry]
+} derive(Eq, @debug.Debug)
+pub fn AuditReport::accepted_count(Self) -> Int
+pub fn AuditReport::action_counts(Self) -> Array[CountEntry]
+pub fn AuditReport::candidate_count(Self) -> Int
+pub fn AuditReport::changed_count(Self) -> Int
+pub fn AuditReport::class_counts(Self) -> Array[CountEntry]
+pub fn AuditReport::input_length(Self) -> Int
+pub fn AuditReport::kept_count(Self) -> Int
+pub fn AuditReport::output_length(Self) -> Int
+pub fn AuditReport::render_json(Self) -> String
+pub fn AuditReport::render_text(Self) -> String
+pub fn AuditReport::suppressed_count(Self) -> Int
+
+pub struct BatchResult {
+  items : Array[NamedResult]
+  total_inputs : Int
+  total_characters : Int
+  total_findings : Int
+  total_changed : Int
+} derive(Eq, @debug.Debug)
+pub fn BatchResult::changed_count(Self) -> Int
+pub fn BatchResult::character_count(Self) -> Int
+pub fn BatchResult::finding_count(Self) -> Int
+pub fn BatchResult::input_count(Self) -> Int
+pub fn BatchResult::items(Self) -> Array[NamedResult]
+
+pub struct CaseEvaluation {
+  name : String
+  predicted : Int
+  expected : Int
+  true_positive : Int
+  false_positive : Int
+  false_negative : Int
+} derive(Eq, @debug.Debug)
+pub fn CaseEvaluation::false_negative(Self) -> Int
+pub fn CaseEvaluation::false_positive(Self) -> Int
+pub fn CaseEvaluation::is_exact(Self) -> Bool
+pub fn CaseEvaluation::name(Self) -> String
+pub fn CaseEvaluation::true_positive(Self) -> Int
+
+pub struct ClassEvaluation {
+  sensitivity : String
+  true_positive : Int
+  false_positive : Int
+  false_negative : Int
+} derive(Eq, @debug.Debug)
+pub fn ClassEvaluation::false_negative(Self) -> Int
+pub fn ClassEvaluation::false_positive(Self) -> Int
+pub fn ClassEvaluation::sensitivity(Self) -> String
+pub fn ClassEvaluation::true_positive(Self) -> Int
+
+pub struct ClassPosture {
+  sensitivity : String
+  action : RedactionAction
+  risk_score : Int
+  explicit_rule : Bool
+} derive(Eq, @debug.Debug)
+pub fn ClassPosture::action(Self) -> RedactionAction
+pub fn ClassPosture::has_explicit_rule(Self) -> Bool
+pub fn ClassPosture::risk_score(Self) -> Int
+pub fn ClassPosture::sensitivity(Self) -> String
+
+pub struct CommandResult {
+  exit_code : Int
+  output : String
+} derive(Eq, @debug.Debug)
+pub fn CommandResult::exit_code(Self) -> Int
+pub fn CommandResult::output(Self) -> String
+
+pub enum Confidence {
+  Low
+  Medium
+  High
+} derive(Eq, @debug.Debug)
+pub fn Confidence::label(Self) -> String
+
+pub struct CorpusEvaluation {
+  cases : Array[CaseEvaluation]
+  classes : Array[ClassEvaluation]
+  true_positive : Int
+  false_positive : Int
+  false_negative : Int
+} derive(Eq, @debug.Debug)
+pub fn CorpusEvaluation::cases(Self) -> Array[CaseEvaluation]
+pub fn CorpusEvaluation::classes(Self) -> Array[ClassEvaluation]
+pub fn CorpusEvaluation::false_negative(Self) -> Int
+pub fn CorpusEvaluation::false_positive(Self) -> Int
+pub fn CorpusEvaluation::is_exact(Self) -> Bool
+pub fn CorpusEvaluation::precision_permille(Self) -> Int
+pub fn CorpusEvaluation::recall_permille(Self) -> Int
+pub fn CorpusEvaluation::render_text(Self) -> String
+pub fn CorpusEvaluation::true_positive(Self) -> Int
+
+pub struct CountEntry {
+  label : String
+  count : Int
+} derive(Eq, @debug.Debug)
+pub fn CountEntry::count(Self) -> Int
+pub fn CountEntry::label(Self) -> String
+
+pub struct Diagnostic {
+  code : String
+  location : String
+  message : String
+  expected : String
+  actual : String
+} derive(Eq, @debug.Debug)
+pub fn Diagnostic::actual(Self) -> String
+pub fn Diagnostic::code(Self) -> String
+pub fn Diagnostic::expected(Self) -> String
+pub fn Diagnostic::location(Self) -> String
+pub fn Diagnostic::message(Self) -> String
+pub fn Diagnostic::new(String, String, String, String, String) -> Self
+pub fn Diagnostic::render(Self) -> String
+
+pub struct DictionaryTerm {
+  name : String
+  value : String
+  case_sensitive : Bool
+  whole_word : Bool
+  priority : Int
+} derive(Eq, @debug.Debug)
+pub fn DictionaryTerm::case_sensitive(Self) -> Bool
+pub fn DictionaryTerm::name(Self) -> String
+pub fn DictionaryTerm::new(String, String, case_sensitive? : Bool, whole_word? : Bool, priority? : Int) -> Result[Self, Diagnostic]
+pub fn DictionaryTerm::priority(Self) -> Int
+pub fn DictionaryTerm::value(Self) -> String
+pub fn DictionaryTerm::whole_word(Self) -> Bool
+
+pub struct EvaluationCase {
+  name : String
+  source : String
+  expected : Array[GroundTruth]
+} derive(Eq, @debug.Debug)
+pub fn EvaluationCase::expected(Self) -> Array[GroundTruth]
+pub fn EvaluationCase::name(Self) -> String
+pub fn EvaluationCase::new(String, String, Array[GroundTruth]) -> Result[Self, Diagnostic]
+
+pub struct Finding {
+  span : Span
+  sensitivity : Sensitivity
+  detector : String
+  confidence : Confidence
+  priority : Int
+  value : String
+} derive(Eq, @debug.Debug)
+pub fn Finding::confidence(Self) -> Confidence
+pub fn Finding::detector(Self) -> String
+pub fn Finding::matched_text(Self) -> String
+pub fn Finding::priority(Self) -> Int
+pub fn Finding::sensitivity(Self) -> Sensitivity
+pub fn Finding::span(Self) -> Span
+
+pub struct GroundTruth {
+  span : Span
+  sensitivity : Sensitivity
+} derive(Eq, @debug.Debug)
+pub fn GroundTruth::new(String, Int, Int, Sensitivity) -> Result[Self, Diagnostic]
+pub fn GroundTruth::sensitivity(Self) -> Sensitivity
+pub fn GroundTruth::span(Self) -> Span
+
+pub enum IssueSeverity {
+  Info
+  Warning
+  Error
+} derive(Eq, @debug.Debug)
+pub fn IssueSeverity::label(Self) -> String
+
+pub struct LineSummary {
+  line : Int
+  finding_count : Int
+  classes : Array[CountEntry]
+} derive(Eq, @debug.Debug)
+pub fn LineSummary::class_counts(Self) -> Array[CountEntry]
+pub fn LineSummary::finding_count(Self) -> Int
+pub fn LineSummary::line(Self) -> Int
+
+pub struct LocatedFinding {
+  finding : Finding
+  start : SourcePosition
+  end : SourcePosition
+} derive(Eq, @debug.Debug)
+pub fn LocatedFinding::end(Self) -> SourcePosition
+pub fn LocatedFinding::finding(Self) -> Finding
+pub fn LocatedFinding::render_location(Self) -> String
+pub fn LocatedFinding::start(Self) -> SourcePosition
+
+pub struct NamedInput {
+  name : String
+  content : String
+} derive(Eq, @debug.Debug)
+pub fn NamedInput::content(Self) -> String
+pub fn NamedInput::name(Self) -> String
+pub fn NamedInput::new(String, String) -> Result[Self, Diagnostic]
+
+pub struct NamedResult {
+  name : String
+  result : RedactionResult
+  audit : AuditReport
+} derive(Eq, @debug.Debug)
+pub fn NamedResult::audit(Self) -> AuditReport
+pub fn NamedResult::name(Self) -> String
+pub fn NamedResult::result(Self) -> RedactionResult
+
+pub struct PolicyChange {
+  span : Span
+  sensitivity : Sensitivity
+  before : RedactionAction
+  after : RedactionAction
+  replacement_changed : Bool
+} derive(Eq, @debug.Debug)
+pub fn PolicyChange::after(Self) -> RedactionAction
+pub fn PolicyChange::before(Self) -> RedactionAction
+pub fn PolicyChange::replacement_changed(Self) -> Bool
+pub fn PolicyChange::sensitivity(Self) -> Sensitivity
+pub fn PolicyChange::span(Self) -> Span
+
+pub struct PolicyComparison {
+  finding_count : Int
+  changed : Array[PolicyChange]
+  before_output_length : Int
+  after_output_length : Int
+} derive(Eq, @debug.Debug)
+pub fn PolicyComparison::after_output_length(Self) -> Int
+pub fn PolicyComparison::before_output_length(Self) -> Int
+pub fn PolicyComparison::changed_count(Self) -> Int
+pub fn PolicyComparison::changes(Self) -> Array[PolicyChange]
+pub fn PolicyComparison::finding_count(Self) -> Int
+pub fn PolicyComparison::render_text(Self) -> String
+
+pub struct PolicyIssue {
+  severity : IssueSeverity
+  code : String
+  selector : String
+  message : String
+} derive(Eq, @debug.Debug)
+pub fn PolicyIssue::code(Self) -> String
+pub fn PolicyIssue::message(Self) -> String
+pub fn PolicyIssue::selector(Self) -> String
+pub fn PolicyIssue::severity(Self) -> IssueSeverity
+
+pub struct PolicyLintReport {
+  issues : Array[PolicyIssue]
+  postures : Array[ClassPosture]
+  errors : Int
+  warnings : Int
+  information : Int
+  total_risk : Int
+} derive(Eq, @debug.Debug)
+pub fn PolicyLintReport::error_count(Self) -> Int
+pub fn PolicyLintReport::info_count(Self) -> Int
+pub fn PolicyLintReport::issues(Self) -> Array[PolicyIssue]
+pub fn PolicyLintReport::passes(Self) -> Bool
+pub fn PolicyLintReport::postures(Self) -> Array[ClassPosture]
+pub fn PolicyLintReport::render_json(Self) -> String
+pub fn PolicyLintReport::render_text(Self) -> String
+pub fn PolicyLintReport::risk_score(Self) -> Int
+pub fn PolicyLintReport::warning_count(Self) -> Int
+
+pub struct PolicyRule {
+  selector : String
+  action : RedactionAction
+  priority : Int
+} derive(Eq, @debug.Debug)
+pub fn PolicyRule::action(Self) -> RedactionAction
+pub fn PolicyRule::new(String, RedactionAction, priority? : Int) -> Result[Self, Diagnostic]
+pub fn PolicyRule::priority(Self) -> Int
+pub fn PolicyRule::selector(Self) -> String
+
+pub(all) enum RedactionAction {
+  Keep
+  Mask(Int)
+  Remove
+  Token(String)
+} derive(Eq, @debug.Debug)
+pub fn RedactionAction::label(Self) -> String
+
+pub struct RedactionDecision {
+  span : Span
+  sensitivity : Sensitivity
+  detector : String
+  action : RedactionAction
+  replacement : String
+} derive(Eq, @debug.Debug)
+pub fn RedactionDecision::action(Self) -> RedactionAction
+pub fn RedactionDecision::detector(Self) -> String
+pub fn RedactionDecision::replacement(Self) -> String
+pub fn RedactionDecision::sensitivity(Self) -> Sensitivity
+pub fn RedactionDecision::span(Self) -> Span
+
+pub struct RedactionPolicy {
+  default_action : RedactionAction
+  rules : Array[PolicyRule]
+  token_salt : String
+} derive(Eq, @debug.Debug)
+pub fn RedactionPolicy::action_for(Self, Sensitivity) -> RedactionAction
+pub fn RedactionPolicy::balanced() -> Self
+pub fn RedactionPolicy::default_action(Self) -> RedactionAction
+pub fn RedactionPolicy::new(default_action? : RedactionAction, rules? : Array[PolicyRule], token_salt? : String) -> Result[Self, Diagnostic]
+pub fn RedactionPolicy::passthrough() -> Self
+pub fn RedactionPolicy::rules(Self) -> Array[PolicyRule]
+pub fn RedactionPolicy::strict() -> Self
+
+pub struct RedactionProfile {
+  scan_config : ScanConfig
+  policy : RedactionPolicy
+} derive(Eq, @debug.Debug)
+pub fn RedactionProfile::balanced() -> Self
+pub fn RedactionProfile::canonical(Self) -> String
+pub fn RedactionProfile::new(ScanConfig, RedactionPolicy) -> Self
+pub fn RedactionProfile::policy(Self) -> RedactionPolicy
+pub fn RedactionProfile::scan_config(Self) -> ScanConfig
+
+pub struct RedactionResult {
+  sanitized : String
+  scan_result : ScanResult
+  decisions : Array[RedactionDecision]
+} derive(Eq, @debug.Debug)
+pub fn RedactionResult::decisions(Self) -> Array[RedactionDecision]
+pub fn RedactionResult::sanitized_text(Self) -> String
+pub fn RedactionResult::scan_result(Self) -> ScanResult
+
+pub struct ResidualReport {
+  clean : Bool
+  findings : Array[Finding]
+} derive(Eq, @debug.Debug)
+pub fn ResidualReport::findings(Self) -> Array[Finding]
+pub fn ResidualReport::is_clean(Self) -> Bool
+
+pub struct ScanConfig {
+  detect_email : Bool
+  detect_ipv4 : Bool
+  detect_payment_card : Bool
+  detect_credential : Bool
+  max_input_chars : Int
+  allowlist : Array[String]
+  dictionary : Array[DictionaryTerm]
+  credential_keys : Array[String]
+} derive(Eq, @debug.Debug)
+pub fn ScanConfig::allowlist(Self) -> Array[String]
+pub fn ScanConfig::default() -> Self
+pub fn ScanConfig::dictionary(Self) -> Array[DictionaryTerm]
+pub fn ScanConfig::max_input_chars(Self) -> Int
+pub fn ScanConfig::with_allowlist(Self, Array[String]) -> Result[Self, Diagnostic]
+pub fn ScanConfig::with_credential(Self, Bool) -> Self
+pub fn ScanConfig::with_credential_keys(Self, Array[String]) -> Result[Self, Diagnostic]
+pub fn ScanConfig::with_dictionary(Self, Array[DictionaryTerm]) -> Result[Self, Diagnostic]
+pub fn ScanConfig::with_email(Self, Bool) -> Self
+pub fn ScanConfig::with_ipv4(Self, Bool) -> Self
+pub fn ScanConfig::with_max_input_chars(Self, Int) -> Result[Self, Diagnostic]
+pub fn ScanConfig::with_payment_card(Self, Bool) -> Self
+
+pub struct ScanResult {
+  input_length : Int
+  candidate_count : Int
+  findings : Array[Finding]
+  suppressed : Array[SuppressedFinding]
+} derive(Eq, @debug.Debug)
+pub fn ScanResult::candidate_count(Self) -> Int
+pub fn ScanResult::findings(Self) -> Array[Finding]
+pub fn ScanResult::input_length(Self) -> Int
+pub fn ScanResult::suppressed(Self) -> Array[SuppressedFinding]
+
+pub(all) enum Sensitivity {
+  Email
+  IPv4
+  PaymentCard
+  Credential
+  Custom(String)
+} derive(Eq, @debug.Debug)
+pub fn Sensitivity::label(Self) -> String
+
+pub struct SourceIndex {
+  source_length : Int
+  line_starts : Array[Int]
+} derive(Eq, @debug.Debug)
+pub fn SourceIndex::line_count(Self) -> Int
+pub fn SourceIndex::new(String) -> Self
+pub fn SourceIndex::position(Self, Int) -> Result[SourcePosition, Diagnostic]
+
+pub struct SourcePosition {
+  offset : Int
+  line : Int
+  column : Int
+} derive(Eq, @debug.Debug)
+pub fn SourcePosition::column(Self) -> Int
+pub fn SourcePosition::line(Self) -> Int
+pub fn SourcePosition::offset(Self) -> Int
+pub fn SourcePosition::render(Self) -> String
+
+pub struct Span {
+  start : Int
+  end : Int
+} derive(Eq, @debug.Debug)
+pub fn Span::contains(Self, Int) -> Bool
+pub fn Span::end(Self) -> Int
+pub fn Span::length(Self) -> Int
+pub fn Span::new(Int, Int) -> Result[Self, Diagnostic]
+pub fn Span::overlaps(Self, Self) -> Bool
+pub fn Span::start(Self) -> Int
+
+pub struct SuppressedFinding {
+  finding : Finding
+  reason : SuppressionReason
+} derive(Eq, @debug.Debug)
+pub fn SuppressedFinding::finding(Self) -> Finding
+pub fn SuppressedFinding::reason(Self) -> SuppressionReason
+
+pub enum SuppressionReason {
+  Allowlisted
+  Overlapped(String)
+} derive(Eq, @debug.Debug)
+pub fn SuppressionReason::label(Self) -> String
+
+// Type aliases
+
+// Traits
+

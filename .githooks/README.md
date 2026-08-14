@@ -2,7 +2,8 @@
 
 ## Pre-commit Hook
 
-This pre-commit hook performs automatic checks before finalizing your commit.
+This optional pre-commit hook checks formatting, runs a strict wasm-gc check,
+and executes the portable test suite before finalizing a commit.
 
 ### Usage Instructions
 
