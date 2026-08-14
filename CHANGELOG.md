@@ -5,7 +5,7 @@ principles and the project uses semantic versioning.
 
 ## [Unreleased]
 
-- Public GitHub delivery and CI verification pending.
+No unreleased changes.
 
 ## [0.1.0] - 2026-08-14
 

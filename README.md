@@ -1,5 +1,7 @@
 # MoonRedact
 
+[![CI](https://github.com/chenliyi-cly/moonredact/actions/workflows/ci.yml/badge.svg)](https://github.com/chenliyi-cly/moonredact/actions/workflows/ci.yml)
+
 MoonRedact is an original MoonBit library and command-line tool for detecting
 sensitive values in free-form text, applying explicit redaction policies, and
 producing deterministic audit evidence. It is designed for logs, configuration
