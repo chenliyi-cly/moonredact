@@ -237,3 +237,122 @@ pub fn AuditReport::render_json(self : AuditReport) -> String {
   render_count_json(self.by_suppression) +
   "}"
 }
+
+///|
+pub fn render_scan_text(result : ScanResult) -> String {
+  let output = StringBuilder::new()
+  output.write_string("MoonRedact scan\n")
+  output.write_string("input-chars: " + result.input_length.to_string() + "\n")
+  output.write_string(
+    "candidates: " + result.candidate_count.to_string() + "\n",
+  )
+  output.write_string(
+    "accepted: " + result.findings.length().to_string() + "\n",
+  )
+  output.write_string(
+    "suppressed: " + result.suppressed.length().to_string() + "\n",
+  )
+  for finding in result.findings {
+    output.write_string(
+      "finding " +
+      finding.sensitivity.label() +
+      " span=" +
+      finding.span.start.to_string() +
+      ":" +
+      finding.span.end.to_string() +
+      " detector=" +
+      finding.detector +
+      " confidence=" +
+      finding.confidence.label() +
+      "\n",
+    )
+  }
+  output.to_string().trim().to_owned()
+}
+
+///|
+pub fn render_scan_json(result : ScanResult) -> String {
+  let output = StringBuilder::new()
+  output.write_string(
+    "{\"input_chars\":" +
+    result.input_length.to_string() +
+    ",\"candidates\":" +
+    result.candidate_count.to_string() +
+    ",\"accepted\":" +
+    result.findings.length().to_string() +
+    ",\"suppressed\":" +
+    result.suppressed.length().to_string() +
+    ",\"findings\":[",
+  )
+  for index, finding in result.findings {
+    if index > 0 {
+      output.write_char(',')
+    }
+    output.write_string(
+      "{\"class\":\"" +
+      json_escape(finding.sensitivity.label()) +
+      "\",\"start\":" +
+      finding.span.start.to_string() +
+      ",\"end\":" +
+      finding.span.end.to_string() +
+      ",\"detector\":\"" +
+      json_escape(finding.detector) +
+      "\",\"confidence\":\"" +
+      finding.confidence.label() +
+      "\"}",
+    )
+  }
+  output.write_string("]}")
+  output.to_string()
+}
+
+///|
+pub fn render_residual_text(result : ResidualReport) -> String {
+  if result.clean {
+    "CLEAN residual-findings=0"
+  } else {
+    let output = StringBuilder::new()
+    output.write_string(
+      "RESIDUAL residual-findings=" + result.findings.length().to_string(),
+    )
+    for finding in result.findings {
+      output.write_string(
+        "\n" +
+        finding.sensitivity.label() +
+        " span=" +
+        finding.span.start.to_string() +
+        ":" +
+        finding.span.end.to_string(),
+      )
+    }
+    output.to_string()
+  }
+}
+
+///|
+pub fn render_residual_json(result : ResidualReport) -> String {
+  let output = StringBuilder::new()
+  output.write_string(
+    "{\"clean\":" +
+    result.clean.to_string() +
+    ",\"count\":" +
+    result.findings.length().to_string() +
+    ",\"findings\":[",
+  )
+  for index, finding in result.findings {
+    if index > 0 {
+      output.write_char(',')
+    }
+    output.write_string(
+      "{\"class\":\"" +
+      json_escape(finding.sensitivity.label()) +
+      "\",\"start\":" +
+      finding.span.start.to_string() +
+      ",\"end\":" +
+      finding.span.end.to_string() +
+      "}",
+    )
+  }
+  output.write_string("]}")
+  output.to_string()
+}

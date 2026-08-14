@@ -1,0 +1,22 @@
+SANITIZED
+contact=*****@*******.*** source=ip_8lh5xu00 password='' card=**** **** **** 1111
+
+MoonRedact audit
+input-chars: 92
+output-chars: 81
+candidates: 4
+accepted: 4
+suppressed: 0
+changed: 4
+kept: 0
+classes:
+  credential: 1
+  payment-card: 1
+  email: 1
+  ipv4: 1
+actions:
+  mask:0: 1
+  token:ip_: 1
+  remove: 1
+  mask:4: 1
+suppressions: none

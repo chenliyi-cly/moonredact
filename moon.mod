@@ -24,3 +24,7 @@ keywords = [ "privacy", "redaction", "pii", "security", "audit" ]
 preferred_target = "wasm-gc"
 
 description = "Deterministic sensitive-text detection, policy redaction, and disclosure auditing for MoonBit"
+
+import {
+  "moonbitlang/x@0.4.49",
+}
