@@ -6,6 +6,7 @@ fn is_command(value : String) -> Bool {
   value == "verify" ||
   value == "profile-check" ||
   value == "profile-canonical" ||
+  value == "policy-lint" ||
   value == "demo" ||
   value == "help" ||
   value == "--help" ||

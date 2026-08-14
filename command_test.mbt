@@ -56,3 +56,13 @@ test "demo exercises every built-in detector class" {
   assert_true(result.output().contains("email: 1"))
   assert_true(result.output().contains("ipv4: 1"))
 }
+
+///|
+test "policy lint CLI returns one for unsafe policy" {
+  let exposed = execute(["policy-lint", "--profile", "default=keep"])
+  assert_eq(exposed.exit_code(), 1)
+  assert_true(exposed.output().contains("policy.default.keep"))
+  let strict = execute(["policy-lint", "--profile", "default=remove", "--json"])
+  assert_eq(strict.exit_code(), 0)
+  assert_true(strict.output().has_prefix("{\"passes\":true"))
+}

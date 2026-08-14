@@ -41,6 +41,7 @@ pub let help_text =
   #|  moonredact verify            --text TEXT [--profile PROFILE] [--json]
   #|  moonredact profile-check     --profile PROFILE
   #|  moonredact profile-canonical --profile PROFILE
+  #|  moonredact policy-lint       --profile PROFILE [--json]
   #|  moonredact demo
   #|
   #|TEXT AND PROFILE: encode newlines as \n, tabs as \t, and backslashes as \\.
@@ -296,6 +297,33 @@ fn profile_command(args : Array[String], canonical : Bool) -> CommandResult {
 }
 
 ///|
+fn policy_lint_command(args : Array[String]) -> CommandResult {
+  match validate_cli_options(args, ["--profile"], ["--json"]) {
+    Err(error) => return error
+    Ok(_) => ()
+  }
+  let source = match required_option(args, "--profile") {
+    Ok(value) => value
+    Err(error) => return error
+  }
+  let profile = match parse_profile(source) {
+    Ok(value) => value
+    Err(error) => return command_error(error.render())
+  }
+  let report = lint_policy(profile.policy())
+  let output = if has_flag(args, "--json") {
+    report.render_json()
+  } else {
+    report.render_text()
+  }
+  if report.passes() {
+    command_ok(output)
+  } else {
+    command_residual(output)
+  }
+}
+
+///|
 pub fn demo_text() -> String {
   "contact=alice@example.com source=10.20.30.40 password='open-sesame' card=4111 1111 1111 1111"
 }
@@ -324,6 +352,7 @@ pub fn execute(args : Array[String]) -> CommandResult {
     "verify" => verify_command(args)
     "profile-check" => profile_command(args, false)
     "profile-canonical" => profile_command(args, true)
+    "policy-lint" => policy_lint_command(args)
     "demo" => demo_command()
     other => command_error("unknown command: " + other + "\n\n" + help_text)
   }
