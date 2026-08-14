@@ -1,5 +1,5 @@
 // Generated using `moon info`, DON'T EDIT IT
-package "moonredact/moonredact"
+package "chenliyi-cly/moonredact"
 
 import {
   "moonbitlang/core/debug",

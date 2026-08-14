@@ -1,5 +1,5 @@
 import {
-  "moonredact/moonredact" @lib,
+  "chenliyi-cly/moonredact" @lib,
   "moonbitlang/core/env",
   "moonbitlang/x/sys",
 }

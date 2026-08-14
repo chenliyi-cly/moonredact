@@ -9,13 +9,13 @@
 //   "moonbitlang/x@0.4.6",
 // }
 
-name = "moonredact/moonredact"
+name = "chenliyi-cly/moonredact"
 
 version = "0.1.0"
 
 readme = "README.md"
 
-repository = ""
+repository = "https://github.com/chenliyi-cly/moonredact"
 
 license = "Apache-2.0"
 
