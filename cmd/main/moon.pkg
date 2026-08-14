@@ -1,0 +1,5 @@
+// import {
+//   "moonredact/moonredact" @lib,
+// }
+
+pkgtype(kind: "executable")
