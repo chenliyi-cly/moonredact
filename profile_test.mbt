@@ -44,11 +44,13 @@ test "profile parser reports stable malformed-line diagnostics" {
 ///|
 test "canonical profile can be parsed again" {
   let first = parse_profile(
-    "allow=localhost\ndictionary=team|Alpha|fold-word|80\ndefault=token:id_\nrule=credential|remove|900",
+    "detectors=email,credential\nallow=localhost\ndictionary=team|Alpha|fold-word|80\ndefault=token:id_\nrule=credential|remove|900",
   ).unwrap()
   let second = parse_profile(first.canonical()).unwrap()
   assert_eq(second.scan_config().allowlist(), ["localhost"])
   assert_eq(second.policy().action_for(Credential).label(), "remove")
+  let scanned = scan("a@example.com 10.0.0.1", config=second.scan_config()).unwrap()
+  assert_eq(scanned.findings().length(), 1)
 }
 
 ///|
@@ -64,5 +66,23 @@ test "action parser rejects malformed actions" {
   assert_eq(
     parse_action("encrypt").unwrap_err().code(),
     "profile.action.invalid",
+  )
+}
+
+///|
+test "canonical profile preserves an intentionally empty built-in detector set" {
+  let config = ScanConfig::default()
+    .with_email(false)
+    .with_ipv4(false)
+    .with_payment_card(false)
+    .with_credential(false)
+  let profile = RedactionProfile::new(config, RedactionPolicy::strict())
+  let parsed = parse_profile(profile.canonical()).unwrap()
+  assert_eq(
+    scan("a@example.com 10.0.0.1", config=parsed.scan_config())
+    .unwrap()
+    .findings()
+    .length(),
+    0,
   )
 }

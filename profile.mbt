@@ -105,6 +105,9 @@ fn parse_detector_list(
     .with_ipv4(false)
     .with_payment_card(false)
     .with_credential(false)
+  if ascii_lower_text(source.trim().to_owned()) == "none" {
+    return Ok(result)
+  }
   let mut seen = 0
   for raw in split_owned(source, ",") {
     let value = ascii_lower_text(raw.trim().to_owned())
@@ -401,8 +404,32 @@ pub fn parse_profile(source : String) -> Result[RedactionProfile, Diagnostic] {
 ///|
 pub fn RedactionProfile::canonical(self : RedactionProfile) -> String {
   let output = StringBuilder::new()
+  let detectors : Array[String] = []
+  if self.scan_config.detect_email {
+    detectors.push("email")
+  }
+  if self.scan_config.detect_ipv4 {
+    detectors.push("ipv4")
+  }
+  if self.scan_config.detect_payment_card {
+    detectors.push("payment-card")
+  }
+  if self.scan_config.detect_credential {
+    detectors.push("credential")
+  }
+  output.write_string("detectors=")
+  if detectors.is_empty() {
+    output.write_string("none")
+  } else {
+    for index, detector in detectors {
+      if index > 0 {
+        output.write_char(',')
+      }
+      output.write_string(detector)
+    }
+  }
   output.write_string(
-    "max-input=" + self.scan_config.max_input_chars.to_string() + "\n",
+    "\nmax-input=" + self.scan_config.max_input_chars.to_string() + "\n",
   )
   for value in self.scan_config.allowlist {
     output.write_string("allow=" + value + "\n")
