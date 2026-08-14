@@ -1,6 +1,6 @@
 ///|
 /// Sensitivity class assigned to a discovered span.
-pub enum Sensitivity {
+pub(all) enum Sensitivity {
   Email
   IPv4
   PaymentCard
